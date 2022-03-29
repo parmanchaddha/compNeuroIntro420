@@ -36,23 +36,32 @@ def make_weights(patterns: List[np.ndarray]) -> np.ndarray:
     return weights
 
 def get_output(pattern: np.ndarray, weights: np.ndarray) -> np.ndarray:
-    output = pattern.copy()
+    output = pattern
     rows = np.arange(pattern.shape[0])
     cols = np.arange(pattern.shape[1])
-    num_iterations: int = 0
-    while num_iterations < 100:
-        r.shuffle(rows)
-        r.shuffle(cols)
-        last_pattern = output.copy()
-        for row_i in rows:
-            for col_i in cols:
-                this_output = (np.reshape(output,(1,output.size)) @ weights[row_i]) * output[row_i][col_i]
-                if this_output > 0:
-                    output[row_i][col_i] = 1.
-                else:
-                    output[row_i][col_i] = -1.
-        if np.array_equal(last_pattern, output):
-            break
-        num_iterations += 1
-    print(num_iterations)
+    for row_i in rows:
+        for col_i in cols:
+            this_output = (np.reshape(output,(1,output.size)) @ weights[row_i]) * output[row_i][col_i]
+            if this_output > 0:
+                output[row_i][col_i] = 1.
+            else:
+                output[row_i][col_i] = -1.
     return output
+
+def hopLoop(patt,wts):
+    inpatt = patt
+    for rw in np.arange(patt.shape[0]):
+        for cl in np.arange(patt.shape[1]):
+            if ((np.reshape(inpatt,(1,inpatt.size)) @ wts[rw]) * inpatt[rw][cl]) > 0:
+                inpatt[rw][cl] = 1.
+            else:
+                inpatt[rw][cl] = -1.
+    return(inpatt)
+
+
+def hopMkWts(patterns):
+    w = np.zeros(list(map((lambda x: x**2),patterns[0].shape)))
+    for p in patterns:
+        w = (1.0/p.size)*(w + np.outer(p,p))
+    np.fill_diagonal(w,0)
+    return(w)

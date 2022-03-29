@@ -78,8 +78,15 @@ def test_make_weights(practice_weights):
     assert np.all(np.isclose(weights, practice_weights))
 
 
-def test_outputs(practice_weights):
-    input_pattern = PATTERNS[0]
-    output = hopfield.get_output(pattern=input_pattern, weights=practice_weights)
+def test_outputs():
+    r.seed(1234)
+    weights = hopfield.hopMkWts(patterns=PATTERNS)
+
+    input_pattern = PATTERNS[0].copy()
+    output = hopfield.get_output(pattern=input_pattern, weights=weights)
+    # output = hopfield.hopLoop(input_pattern, weights)
+    print(output)
+    print(input_pattern)
+    print(PATTERNS[0])
     assert np.array_equal(output, input_pattern)
     assert False
