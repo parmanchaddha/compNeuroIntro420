@@ -1,0 +1,7 @@
+__pycache__/
+mock_model/
+no_deriv/
+*.cfg
+*.png
+*.zip
+*.pdf
